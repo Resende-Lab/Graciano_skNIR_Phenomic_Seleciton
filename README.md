@@ -11,7 +11,8 @@ SNP_data: Markers coded 0,1,2.
 BLUE_BLUP_C19:BLUEs and BLUPs for the traits assessed in Citra in 2019.  
 BLUE_BLUP_C21: BLUEs and BLUPs for the traits assessed in Citra in 2021.  
 BLUE_BLUP_C22: BLUEs and BLUPs for the traits assessed in Citra in 2022.  
-DH_24: Germination rate from double haploids selected with phenomic selection and assessed in Citra in 2024.
+DH_24: Germination rate from double haploids selected with phenomic selection and assessed in Citra in 2024.  
+geno_calls: Information on which lines in the diversity panel have the genes sugary1 (su1) and/or shrunken2 (sh2).
 
 **2.Analysis:**  
 Prediction_models_CV1: Preprocessing phenomic data and predictions models with CV1 cross-validation.  
