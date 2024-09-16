@@ -1,3 +1,0 @@
-1.Data/NIRS_DH.csv filter=lfs diff=lfs merge=lfs -text
-1.Data/NIRS_S19.csv filter=lfs diff=lfs merge=lfs -text
-1.Data/NIRS_S20.csv filter=lfs diff=lfs merge=lfs -text
