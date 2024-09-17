@@ -9,9 +9,6 @@ rm(list=ls())
 ##### Load packages and data #####   
 ##################################
 
-
-
-
 ### Load packages
 
 require(prospectr); require(tidyverse); require(AGHmatrix); require(BGLR); require(dismo)
@@ -23,32 +20,22 @@ S20.NIRS= read.csv("NIRS_S20.csv")
 DH.NIRS= read.csv("NIRS_DH.csv")
 
 #Phenotypic
-C22.Traits <- read.csv("BLUE_BLUP_C22.csv") ## choose the dataset to calibrate the model
-colnames(C22.Traits) =c( "Genotype",sub("^.*_(.*)_.*$", "\\1", colnames(C22.Traits[,2:24])))
+C22.Traits <- read.csv("BLUE_C22.csv") ## choose the dataset to calibrate the model
 
 ##### 1. Preprocessing NIRS #########
 #####################################
 
-# Average spectra per genotype 
-S19.NIRS= S19.NIRS %>% filter(outliers!=1)
-S19.NIRS.avg=aggregate(x = S19.NIRS[,4:773], by = list(S19.NIRS$genotype),mean, na.rm = TRUE)
-
-S20.NIRS= S20.NIRS %>% filter(outliers!=1)
-S20.NIRS.avg=aggregate(x = S20.NIRS[,4:773], by = list(S20.NIRS$Genotype),mean, na.rm = TRUE)
-
-DH.NIRS= DH.NIRS %>% filter(outliers!=1)
-DH.NIRS.avg=aggregate(x = DH.NIRS[,5:785], by = list(DH.NIRS$souceID),mean, na.rm = TRUE)
-
 #Average across years
-S19_20.NIRS= rbind(S20.NIRS.avg,S19.NIRS.avg)
-S19_20.NIRS= aggregate(x = S19_20.NIRS[,2:771], by = list(S19_20.NIRS$Group.1),mean, na.rm = TRUE)
+S19_20.NIRS= rbind(S20.NIRS,S19.NIRS)
+S19_20.NIRS= aggregate(x = S19_20.NIRS[,2:771], by = list(S19_20.NIRS$Genotype),mean, na.rm = TRUE)
+S19_20.NIRS=S19_20.NIRS%>%rename(Genotype=Group.1)
 
 ##combining data sets 
-NIRS.comb=rbind(S19_20.NIRS,DH.NIRS.avg[,c(1,8:777)])
+NIRS.comb=rbind(S19_20.NIRS,DH.NIRS[,c(1,8:777)])
 
 ## Tranforming data for next steps
 N= as.matrix(NIRS.comb[,c(2:771)])
-row.names(N)= NIRS.comb$Group.1
+row.names(N)= NIRS.comb$Genotype
 
 #### Plotting raw spectra
 wavelengths<-seq(910,1679,by=1)
@@ -87,7 +74,7 @@ n.inb= length(data.1$Genotype) ##number of lines in the diversity panel
 n= which(!rownames(P_matrix[1:675,])%in%Match.names)
 P_matrix.1=P_matrix[-n,-n]
 ###
-phenos <- colnames(data.1)[2:24]  ##choosing traits
+phenos <- colnames(data.1)[-1]  ##choosing traits
 
 # Transforming in factor
 data.1= transform(data.1, Genotype= as.factor(Genotype))

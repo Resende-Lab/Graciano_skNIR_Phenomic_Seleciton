@@ -23,34 +23,22 @@ S19.NIRS= read.csv("NIRS_S19.csv")
 S20.NIRS= read.csv("NIRS_S20.csv")
 
 #Phenotypic
-C21.Traits <- read.csv("BLUE_BLUP_C21.csv")
-C22.Traits <- read.csv("BLUE_BLUP_C22.csv")
-C19.Traits= read.csv("BLUE_BLUP_C19.csv")
-colnames(C19.Traits) =c( "Genotype",sub("^.*_(.*)_.*$", "\\1", colnames(C19.Traits[,2:13])))
-colnames(C21.Traits) =c( "Genotype",sub("^.*_(.*)_.*$", "\\1", colnames(C21.Traits[,2:21])))
-colnames(C22.Traits) =c( "Genotype",sub("^.*_(.*)_.*$", "\\1", colnames(C22.Traits[,2:24])))
+C21.Traits <- read.csv("BLUE_C21.csv")
+C22.Traits <- read.csv("BLUE_C22.csv")
+C19.Traits= read.csv("BLUE_C19.csv")
 
 ##### 1. Preprocessing NIRS #########
 #####################################
-
-# Average spectra per genotype 
-S19.NIRS= S19.NIRS %>% filter(outliers!=1)
-S19.NIRS.avg=aggregate(x = S19.NIRS[,4:773], by = list(S19.NIRS$genotype),mean, na.rm = TRUE)
-
-S20.NIRS= S20.NIRS %>% filter(outliers!=1)
-S20.NIRS.avg=aggregate(x = S20.NIRS[,4:773], by = list(S20.NIRS$Genotype),mean, na.rm = TRUE)
-
 #Average across years
-S19_20.NIRS= rbind(S20.NIRS.avg,S19.NIRS.avg)
-S19_20.NIRS= aggregate(x = S19_20.NIRS[,2:771], by = list(S19_20.NIRS$Group.1),mean, na.rm = TRUE)
-
+S19_20.NIRS= rbind(S20.NIRS,S19.NIRS)
+S19_20.NIRS= aggregate(x = S19_20.NIRS[,2:771], by = list(S19_20.NIRS$Genotype),mean, na.rm = TRUE)
 
 ## Tranforming data for next steps
-N.19= as.matrix(S19.NIRS.avg[,c(2:771)])
-row.names(N.19)= S19.NIRS.avg$Group.1
+N.19= as.matrix(S19.NIRS[,c(2:771)])
+row.names(N.19)= S19.NIRS$Genotype
 
-N.20=as.matrix(S20.NIRS.avg[,2:771])
-rownames(N.20)= S20.NIRS.avg$Group.1
+N.20=as.matrix(S20.NIRS[,2:771])
+rownames(N.20)= S20.NIRS$Genotype
 
 N.19_20= as.matrix(S19_20.NIRS[,2:771])
 rownames(N.19_20)= S19_20.NIRS$Group.1
@@ -137,7 +125,7 @@ P_matrix.1=P_matrix[which(rownames(P_matrix)%in%Match.names), which(rownames(P_m
 P_matrix.1=P_matrix.1[order(colnames(P_matrix.1)),order(colnames(P_matrix.1))]
 
 ###
-phenos <- colnames(data.1)[2:21]  ##choosing traits
+phenos <- colnames(data.1)[-1]  ##choosing traits
 
 # Transforming in factor
 data.1= transform(data.1, Genotype= as.factor(Genotype))
